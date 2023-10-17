@@ -4,15 +4,14 @@ Command: npx gltfjsx@6.1.11 public/models/me.glb -o src/components/Avatar.jsx -k
 */
 
 import React, { useEffect, useRef, useState } from "react";
-import { useAnimations, useFBX, useGLTF, useScroll } from "@react-three/drei";
+import { useAnimations, useGLTF, useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import useAnims from "../hooks/useAnims";
 
 export function Avatar(props) {
   const { nodes, materials } = useGLTF("/models/me.glb");
-  const { animations: idleAnimation } = useFBX("/animations/Idle.fbx");
-  const { animations: walkAnimation } = useFBX("/animations/Walking.fbx");
-  const { animations: landingAnimation } = useFBX("/animations/Landing.fbx");
+  const { idleAnimation, walkAnimation, landingAnimation } = useAnims();
 
   const group = useRef();
   const landing = useRef(false);
@@ -148,8 +147,3 @@ export function Avatar(props) {
     </group>
   );
 }
-
-useGLTF.preload("/models/me.glb");
-useFBX.preload("/animations/Idle.fbx");
-useFBX.preload("/animations/Walking.fbx");
-useFBX.preload("/animations/Landing.fbx");
