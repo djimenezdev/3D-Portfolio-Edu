@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { dampC } from "maath/easing";
 import { useAtom } from "jotai";
 import { halloweenAtom } from "./Menu";
-import { useProgress } from "@react-three/drei";
+import { OrbitControls, useProgress } from "@react-three/drei";
 
 const CanvasSettings = () => {
   const colorRef = useRef();
@@ -21,6 +21,8 @@ const CanvasSettings = () => {
     <>
       <color ref={colorRef} attach="background" args={["#f5f3ee"]} />
       <fog ref={fogRef} attach="fog" args={["#f5f3ee", 10, 20]} />
+      <ambientLight intensity={0.35} />
+      <directionalLight intensity={0.5} position={[0, 2, 1]} />
     </>
   );
 };

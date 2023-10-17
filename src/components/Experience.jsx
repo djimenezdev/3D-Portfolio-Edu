@@ -31,6 +31,8 @@ import { halloweenAtom } from "./Menu";
 import { dampC } from "maath/easing";
 import Effects from "./Effects";
 import { HalloweenAvatar } from "./HalloweenAvatar";
+import { Ghost } from "./Ghost";
+import { TextBubble } from "./TextBubble";
 
 const SECTIONS_DISTANCE = 10;
 
@@ -85,8 +87,6 @@ export const Experience = () => {
 
   return (
     <>
-      <ambientLight intensity={0.35} />
-      <directionalLight intensity={0.5} position={[0, 2, 1]} />
       <Effects />
       <Avatar
         visible={!themeIcon}
@@ -113,7 +113,32 @@ export const Experience = () => {
             },
           }}
         >
-          <Star position-y={2.2} scale={0.3} position-z={isMobile ? -5 : 0} />
+          <Star
+            position-y={2.2}
+            scale={0.3}
+            position-z={isMobile ? -5 : 0}
+            visible={!themeIcon}
+          />
+          <Float
+            speed={1.2}
+            rotationIntensity={0}
+            floatIntensity={2}
+            floatingRange={[-0.04, 0.1]}
+          >
+            <Ghost
+              visible={themeIcon}
+              position-y={2.2}
+              scale={0.17}
+              position-z={isMobile ? -5 : 0}
+            />
+            <TextBubble
+              visible={themeIcon}
+              scale={0.25}
+              position-y={2.2}
+              position-z={isMobile ? -5 : 0}
+              position-x={0.7}
+            />
+          </Float>
           <Float floatIntensity={2} speed={2}>
             <MacBookPro
               position-x={isMobile ? -0.5 : -1}

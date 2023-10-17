@@ -10,9 +10,9 @@ const Menu = () => {
   const [themeIcon, setThemeIcon] = useAtom(halloweenAtom);
   return (
     <motion.div
+      style={{ backdropFilter: themeIcon ? "none" : "blur(8px)" }}
       animate={{
         backgroundColor: themeIcon ? "#0b021a0" : "#f5f3ef8a",
-        backdropFilter: themeIcon ? "none" : "blur(8px)",
       }}
       className="menu"
     >

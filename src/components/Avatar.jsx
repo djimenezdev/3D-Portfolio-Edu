@@ -12,41 +12,41 @@ export function Avatar(props) {
   const { nodes, materials } = useGLTF("/models/me.glb");
   const { animations: idleAnimation } = useFBX("/animations/Idle.fbx");
   const { animations: walkAnimation } = useFBX("/animations/Walking.fbx");
-  // const { animations: landingAnimation } = useFBX("/animations/Landing.fbx");
+  const { animations: landingAnimation } = useFBX("/animations/Landing.fbx");
 
   const group = useRef();
   const landing = useRef(false);
   idleAnimation[0].name = "Idle";
   walkAnimation[0].name = "Walking";
-  // landingAnimation[0].name = "Landing";
+  landingAnimation[0].name = "Landing";
 
   const { actions } = useAnimations(
-    [idleAnimation[0], walkAnimation[0] /* , landingAnimation[0] */],
+    [idleAnimation[0], walkAnimation[0], landingAnimation[0]],
     group
   );
-  const [animation, setAnimation] = useState("Idle");
+  const [animation, setAnimation] = useState("Landing");
 
   const scrollData = useScroll();
   const lastScroll = useRef(0);
 
   // trigger this one on load and when switching between modes
-  /* useEffect(() => {
+  useEffect(() => {
     actions["Landing"]
       .reset()
       .setLoop(THREE.LoopOnce)
       .startAt(1)
       .fadeIn(0.5)
       .play()
-      .crossFadeTo(actions["Idle"], 3)
+      .crossFadeTo(actions["Idle"], 2)
       .play();
     return () => {
       actions["Landing"].fadeOut(0.5);
       actions["Idle"].fadeOut(0.5);
     };
-  }, []); */
+  }, []);
 
   useEffect(() => {
-    // if (animation === "Landing") return;
+    if (animation === "Landing") return;
 
     actions[animation].reset().fadeIn(0.5).play();
     return () => {
@@ -59,16 +59,18 @@ export function Avatar(props) {
     let rotationTarget = 0;
     if (Math.abs(scrollDelta) > 0.00001) {
       setAnimation("Walking");
-      /* if (!landing.current) {
+      if (!landing.current) {
         landing.current = true;
-      } */
+      }
       if (scrollDelta > 0) {
         rotationTarget = !props.isMobile ? 0 : Math.PI / 2;
       } else {
         rotationTarget = !props.isMobile ? Math.PI : -Math.PI / 2;
       }
     } else {
-      setAnimation("Idle");
+      if (landing.current) {
+        setAnimation("Idle");
+      }
     }
     group.current.rotation.y = THREE.MathUtils.lerp(
       group.current.rotation.y,

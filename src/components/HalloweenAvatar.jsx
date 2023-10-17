@@ -4,28 +4,130 @@ Command: npx gltfjsx@6.1.11 public/models/HalloweenMe.glb -o src/components/Hall
 */
 
 import React, { useEffect, useRef, useState } from "react";
-import { useAnimations, useFBX, useGLTF } from "@react-three/drei";
+import {
+  useAnimations,
+  useCursor,
+  useFBX,
+  useGLTF,
+  useScroll,
+} from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
 export function HalloweenAvatar(props) {
   const { nodes, materials } = useGLTF("/models/halloweenMe.glb");
 
   const { animations: idleAnimation } = useFBX("/animations/Idle.fbx");
-
+  const { animations: walkAnimation } = useFBX("/animations/Walking.fbx");
+  const { animations: landingAnimation } = useFBX("/animations/Landing.fbx");
+  const { animations: punchAnimation } = useFBX("/animations/Punching Bag.fbx");
   const group = useRef();
+  const landing = useRef(false);
   idleAnimation[0].name = "Idle";
+  walkAnimation[0].name = "Walking";
+  landingAnimation[0].name = "Landing";
+  punchAnimation[0].name = "Punching Bag";
 
-  const { actions } = useAnimations([idleAnimation[0]], group);
+  const { actions } = useAnimations(
+    [
+      idleAnimation[0],
+      walkAnimation[0],
+      landingAnimation[0],
+      punchAnimation[0],
+    ],
+    group
+  );
+  const [animation, setAnimation] = useState("Landing");
+  const [hovered, setHovered] = useState(false);
 
-  const [animation, setAnimation] = useState("Idle");
+  const scrollData = useScroll();
+  const lastScroll = useRef(0);
 
   useEffect(() => {
-    console.log("yes");
+    const onPunching = () => {
+      actions["Punching Bag"].reset().fadeIn(0.5).play();
+      actions["Idle"]
+        .reset()
+        .crossFadeFrom(actions["Punching Bag"], 0.5)
+        .play();
+    };
+    // landing animation
+    actions["Landing"]
+      .reset()
+      .setLoop(THREE.LoopOnce)
+      .startAt(1)
+      .fadeIn(0.5)
+      .play()
+      .crossFadeTo(actions["Idle"], 2)
+      .play();
+
+    // listener for punching animation
+    actions["Punching Bag"].getMixer().addEventListener("finished", onPunching);
+    return () => {
+      actions["Landing"].fadeOut(0.5);
+      actions["Idle"].fadeOut(0.5);
+      actions["Punching Bag"]
+        .getMixer()
+        .removeEventListener("finished", onPunching);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (animation === "Landing") return;
     actions[animation].reset().fadeIn(0.5).play();
-    return () => actions[animation].fadeOut(0.5);
+    return () => {
+      actions[animation].fadeOut(0.5);
+    };
   }, [animation]);
 
+  useFrame(() => {
+    const scrollDelta = scrollData.offset - lastScroll.current;
+    let rotationTarget = 0;
+    if (Math.abs(scrollDelta) > 0.00001) {
+      setAnimation("Walking");
+      if (!landing.current) {
+        landing.current = true;
+      }
+      if (scrollDelta > 0) {
+        rotationTarget = !props.isMobile ? 0 : Math.PI / 2;
+      } else {
+        rotationTarget = !props.isMobile ? Math.PI : -Math.PI / 2;
+      }
+    } else {
+      if (landing.current) {
+        setAnimation("Idle");
+      }
+    }
+    group.current.rotation.y = THREE.MathUtils.lerp(
+      group.current.rotation.y,
+      rotationTarget,
+      0.1
+    );
+    lastScroll.current = scrollData.offset;
+  });
+
+  useCursor(props.visible && hovered);
+  const triggerPunch = () => {
+    if (
+      !props.visible ||
+      actions["Punching Bag"].isRunning() ||
+      scrollData.offset != 0
+    )
+      return;
+    actions["Idle"].fadeOut(0.5);
+    // reset is key for when this specific action is replayed via the onClicks
+    actions["Punching Bag"].reset().setLoop(THREE.LoopOnce).fadeIn(0.5).play();
+  };
+
   return (
-    <group {...props} dispose={null} ref={group}>
+    <group
+      {...props}
+      dispose={null}
+      ref={group}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onClick={triggerPunch}
+    >
       <primitive object={nodes.Hips} />
       <skinnedMesh
         name="Wolf3D_Body"
@@ -94,3 +196,7 @@ export function HalloweenAvatar(props) {
 }
 
 useGLTF.preload("/models/halloweenMe.glb");
+useFBX.preload("/animations/Idle.fbx");
+useFBX.preload("/animations/Walking.fbx");
+useFBX.preload("/animations/Landing.fbx");
+useFBX.preload("/animations/Punching Bag.fbx");
