@@ -21,7 +21,7 @@ const Menu = () => {
         <motion.img
           className="menu__icon"
           animate={{
-            opacity: !themeIcon ? 0 : 1,
+            opacity: themeIcon ? 0 : 1,
           }}
           src={sunIcon}
           alt="Sun Icon"
@@ -29,7 +29,7 @@ const Menu = () => {
         <motion.img
           className="menu__icon"
           animate={{
-            opacity: !themeIcon ? 1 : 0,
+            opacity: themeIcon ? 1 : 0,
           }}
           src={pumpkinIcon}
           alt="Pumpkin Icon"
