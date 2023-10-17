@@ -219,8 +219,6 @@ a {
   top: 0;
   left: 4rem;
   right: 4rem;
-  background: #f5f3ef8a;
-  backdrop-filter: blur(8px);
 }
 
 .menu__logo {
@@ -237,12 +235,25 @@ a {
 
 .menu__button {
   font-weight: bold;
-  color: var(--text-color);
 }
 
-.menu__button:hover {
-  color: var(--primary-color);
+.menu__icons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu__icon {
   cursor: pointer;
+  height: 40px;
+  width: 40px;
+}
+
+.menu__icons > .menu__icon:last-of-type {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 /* LOADING SCREEN */
@@ -251,7 +262,6 @@ a {
   position: fixed;
   top: 0;
   left: 0;
-  padding: 4rem;
   width: 100vw;
   height: 100vh;
   z-index: 1;

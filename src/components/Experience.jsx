@@ -1,7 +1,6 @@
 import {
   Center,
   ContactShadows,
-  Environment,
   Float,
   MeshDistortMaterial,
   RoundedBox,
@@ -27,18 +26,25 @@ import { Pigeon } from "./Pigeon";
 import { motion } from "framer-motion-3d";
 import MonitorScreen from "./MonitorScreen";
 import useMobile from "../hooks/useMobile";
+import { useAtom } from "jotai";
+import { halloweenAtom } from "./Menu";
+import { dampC } from "maath/easing";
+import Effects from "./Effects";
+import { HalloweenAvatar } from "./HalloweenAvatar";
 
 const SECTIONS_DISTANCE = 10;
 
 export const Experience = () => {
   const sceneContainer = useRef();
+  const floorRef = useRef();
   const scrollData = useScroll();
 
   const [section, setSection] = useState(config.sections[0]);
 
   const { isMobile, scaleFactor } = useMobile();
+  const [themeIcon] = useAtom(halloweenAtom);
 
-  useFrame(() => {
+  useFrame((_state, delta) => {
     if (isMobile) {
       sceneContainer.current.position.x =
         -scrollData.offset * SECTIONS_DISTANCE * (scrollData.pages - 1);
@@ -51,6 +57,11 @@ export const Experience = () => {
     setSection(
       config.sections[Math.round(scrollData.offset * (scrollData.pages - 1))]
     );
+
+    // theme
+    if (!floorRef.current) return;
+    const currentColor = floorRef.current.material.color;
+    dampC(currentColor, themeIcon ? "#0B021A" : "#f5f3ee", 0.1, delta);
   });
 
   useEffect(() => {
@@ -74,11 +85,21 @@ export const Experience = () => {
 
   return (
     <>
-      <Environment preset="sunset" />
-      <Avatar isMobile={isMobile} position-z={isMobile ? -5 : 0} />
-
-      <ContactShadows opacity={0.5} scale={[30, 30]} color="#9c8e66" />
-      <mesh position-y={-0.001} rotation-x={-Math.PI / 2}>
+      <ambientLight intensity={0.35} />
+      <directionalLight intensity={0.5} position={[0, 2, 1]} />
+      <Effects />
+      <Avatar
+        visible={!themeIcon}
+        isMobile={isMobile}
+        position-z={isMobile ? -5 : 0}
+      />
+      <HalloweenAvatar visible={themeIcon} />
+      <ContactShadows
+        opacity={themeIcon ? 0 : 0.5}
+        scale={[30, 30]}
+        color="#9c8e66"
+      />
+      <mesh ref={floorRef} position-y={-0.001} rotation-x={-Math.PI / 2}>
         <planeGeometry args={[100, 100]} />
         <meshStandardMaterial color="#f5f3ee" />
       </mesh>
@@ -117,6 +138,7 @@ export const Experience = () => {
                   position-z={-3}
                   bevelEnabled
                   bevelThickness={0.3}
+                  themeIcon={themeIcon}
                 >
                   {config.home.title}
                 </SectionTitle>
@@ -130,6 +152,7 @@ export const Experience = () => {
                 bevelEnabled
                 bevelThickness={0.3}
                 rotation-y={Math.PI / 10}
+                themeIcon={themeIcon}
               >
                 {config.home.subtitle}
               </SectionTitle>
