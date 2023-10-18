@@ -20,7 +20,7 @@ export function TextBubble(props) {
         font="/fonts/RobotoSlab-Regular.ttf"
         material-color="red"
         characters="bo!"
-        position-z={0.05}
+        position-z={0.055}
       >
         Boo!
         <meshBasicMaterial color="#4F09C6" toneMapped={false} />

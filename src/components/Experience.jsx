@@ -119,26 +119,27 @@ export const Experience = () => {
             position-z={isMobile ? -5 : 0}
             visible={!themeIcon}
           />
-          {themeIcon && (
-            <Float
-              speed={1.2}
-              rotationIntensity={0}
-              floatIntensity={2}
-              floatingRange={[-0.04, 0.1]}
-            >
-              <Ghost
-                position-y={2.2}
-                scale={0.17}
-                position-z={isMobile ? -5 : 0}
-              />
-              <TextBubble
-                scale={0.25}
-                position-y={2.2}
-                position-z={isMobile ? -5 : 0}
-                position-x={0.7}
-              />
-            </Float>
-          )}
+          <Float
+            speed={1.2}
+            rotationIntensity={0}
+            floatIntensity={2}
+            floatingRange={[-0.04, 0.1]}
+          >
+            <Ghost
+              visible={themeIcon}
+              position-y={2.2}
+              scale={0.17}
+              position-z={isMobile ? -5 : 0}
+            />
+            <TextBubble
+              visible={themeIcon}
+              scale={0.25}
+              position-y={2.2}
+              position-z={isMobile ? -5 : 0}
+              position-x={0.7}
+            />
+          </Float>
+
           <Float floatIntensity={2} speed={2}>
             <MacBookPro
               position-x={isMobile ? -0.5 : -1}

@@ -28,7 +28,6 @@ const Effects = () => {
     <EffectComposer>
       <Bloom
         mipmapBlur
-        intensity={1}
         luminanceSmoothing={lumSmooth}
         luminanceThreshold={lumThres}
         radius={bloomRadius}
