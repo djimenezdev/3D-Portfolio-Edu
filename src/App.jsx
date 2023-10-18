@@ -31,7 +31,7 @@ function App() {
               </group>
             </Suspense>
           </MotionConfig>
-          {/* <Scroll html>
+          <Scroll html>
             <MotionConfig
               transition={{
                 duration: 1,
@@ -39,7 +39,7 @@ function App() {
             >
               <Interface />
             </MotionConfig>
-          </Scroll> */}
+          </Scroll>
         </ScrollControls>
       </Canvas>
       <Menu />
