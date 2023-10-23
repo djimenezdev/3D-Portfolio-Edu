@@ -256,6 +256,29 @@ a {
   left: 0;
 }
 
+.music__box {
+  cursor: pointer;
+  position: absolute;
+  bottom: 4rem;
+  right: 2rem;
+  height: 46px;
+  width: 46px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ff704c;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+  & svg {
+    position: absolute;
+    object-fit: contain;
+    width: 20px;
+  }
+}
+
 /* LOADING SCREEN */
 
 .loading-screen {
