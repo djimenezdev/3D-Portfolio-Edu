@@ -4,7 +4,12 @@ Command: npx gltfjsx@6.1.11 public/models/me.glb -o src/components/Avatar.jsx -k
 */
 
 import React, { useEffect, useRef, useState } from "react";
-import { useAnimations, useGLTF, useScroll } from "@react-three/drei";
+import {
+  useAnimations,
+  useGLTF,
+  useProgress,
+  useScroll,
+} from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import useAnims from "../hooks/useAnims";
@@ -12,6 +17,7 @@ import useAnims from "../hooks/useAnims";
 export function Avatar(props) {
   const { nodes, materials } = useGLTF("/models/me.glb");
   const { idleAnimation, walkAnimation, landingAnimation } = useAnims();
+  const { active } = useProgress();
 
   const group = useRef();
   const landing = useRef(false);
@@ -30,19 +36,21 @@ export function Avatar(props) {
 
   // trigger this one on load and when switching between modes
   useEffect(() => {
-    actions["Landing"]
-      .reset()
-      .setLoop(THREE.LoopOnce)
-      .startAt(1)
-      .fadeIn(0.5)
-      .play()
-      .crossFadeTo(actions["Idle"], 2)
-      .play();
+    if (!active) {
+      actions["Landing"]
+        .reset()
+        .setLoop(THREE.LoopOnce)
+        .startAt(1)
+        .fadeIn(0.5)
+        .play()
+        .crossFadeTo(actions["Idle"], 2.5)
+        .play();
+    }
     return () => {
       actions["Landing"].fadeOut(0.5);
       actions["Idle"].fadeOut(0.5);
     };
-  }, []);
+  }, [active]);
 
   useEffect(() => {
     if (animation === "Landing") return;
