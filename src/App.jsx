@@ -1,4 +1,4 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { Experience } from "./components/Experience";
 import { Scroll, ScrollControls } from "@react-three/drei";
 import { config } from "./config";
@@ -8,10 +8,19 @@ import Menu from "./components/Menu";
 import LoadingScreen from "./components/LoadingScreen";
 import { Suspense } from "react";
 import CanvasSettings from "./components/CanvasSettings";
+import Music from "./components/Music";
+import { Leva } from "leva";
 
 function App() {
   return (
     <>
+      <Leva
+        hidden={
+          !Boolean(
+            Number(new URLSearchParams(window.location.search).get("debug"))
+          )
+        }
+      />
       <LoadingScreen />
       <Canvas camera={{ position: [0, 0.5, 5], fov: 42 }}>
         <CanvasSettings />
@@ -43,6 +52,7 @@ function App() {
         </ScrollControls>
       </Canvas>
       <Menu />
+      <Music />
     </>
   );
 }
