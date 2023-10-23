@@ -33,6 +33,11 @@ import Effects from "./Effects";
 import { HalloweenAvatar } from "./HalloweenAvatar";
 import { Ghost } from "./Ghost";
 import { TextBubble } from "./TextBubble";
+import { HalloweenCat } from "./HalloweenCat";
+import { Spider } from "./Spider";
+import { useControls } from "leva";
+import { Caldron } from "./Caldron";
+import { Witch } from "./Witch";
 
 const SECTIONS_DISTANCE = 10;
 
@@ -46,6 +51,30 @@ export const Experience = () => {
   const { isMobile, scaleFactor } = useMobile();
   const [themeIcon] = useAtom(halloweenAtom);
 
+  const { spiderPositionX, spiderPositionY, spiderPositionZ } = useControls(
+    "spider",
+    {
+      spiderPositionX: {
+        value: 0.7,
+        min: -100,
+        max: 100,
+        step: 0.001,
+      },
+      spiderPositionY: {
+        value: 2.7,
+        min: -100,
+        max: 100,
+        step: 0.001,
+      },
+      spiderPositionZ: {
+        value: 0.41,
+        min: -100,
+        max: 100,
+        step: 0.001,
+      },
+    }
+  );
+
   useFrame((_state, delta) => {
     if (isMobile) {
       sceneContainer.current.position.x =
@@ -56,6 +85,7 @@ export const Experience = () => {
         -scrollData.offset * SECTIONS_DISTANCE * (scrollData.pages - 1);
       sceneContainer.current.position.x = 0;
     }
+
     setSection(
       config.sections[Math.round(scrollData.offset * (scrollData.pages - 1))]
     );
@@ -67,7 +97,6 @@ export const Experience = () => {
   });
 
   useEffect(() => {
-    window.location.href = `#home`;
     const handleHashChange = () => {
       const sectionIndex = config.sections.indexOf(
         window.location.hash.replace("#", "")
@@ -93,7 +122,11 @@ export const Experience = () => {
         isMobile={isMobile}
         position-z={isMobile ? -5 : 0}
       />
-      <HalloweenAvatar visible={themeIcon} />
+      <HalloweenAvatar
+        visible={themeIcon}
+        isMobile={isMobile}
+        position-z={isMobile ? -5 : 0}
+      />
       <ContactShadows
         opacity={themeIcon ? 0 : 0.5}
         scale={[30, 30]}
@@ -140,6 +173,24 @@ export const Experience = () => {
             />
           </Float>
 
+          <group
+            position-x={isMobile ? 2.3 * scaleFactor : 3 * scaleFactor}
+            position-z={isMobile ? 0.5 : -0.5}
+            rotation-y={-0.5}
+          >
+            <HalloweenCat
+              visible={themeIcon}
+              scale={isMobile ? 0.0013 : 0.0022}
+            />
+            <pointLight
+              visible={themeIcon}
+              color="#ff704c"
+              intensity={3}
+              distance={13}
+              position-z={0.4}
+            />
+          </group>
+
           <Float floatIntensity={2} speed={2}>
             <MacBookPro
               position-x={isMobile ? -0.5 : -1}
@@ -149,11 +200,51 @@ export const Experience = () => {
               rotation-y={Math.PI / 4}
             />
           </Float>
-          <PalmTree
-            scale={0.018}
-            rotation-y={THREE.MathUtils.degToRad(140)}
-            position={isMobile ? [1, 0, -4] : [4 * scaleFactor, 0, -5]}
-          />
+          <group position={isMobile ? [1, 0, -4] : [4 * scaleFactor, 0, -5]}>
+            <PalmTree
+              scale={0.018}
+              rotation-y={THREE.MathUtils.degToRad(140)}
+            />
+            <group
+              position={[
+                isMobile ? 0.2 : spiderPositionX,
+                spiderPositionY,
+                spiderPositionZ,
+              ]}
+            >
+              {/* to imitate web at same fixed position as its height increases,
+              this is the equation to get the new y of the web: y = currentY - (desiredScale / 2)
+              */}
+              <Spider
+                position-y={isMobile ? 0 : -0.12}
+                visible={themeIcon}
+                scale={!isMobile ? 0.5 : 0.3}
+                rotation-x={THREE.MathUtils.degToRad(90)}
+              />
+            </group>
+          </group>
+          <group position-x={-1.7} position-z={1.2}>
+            <Caldron
+              visible={themeIcon}
+              scale={isMobile ? 0.8 : 1}
+              position-x={
+                isMobile
+                  ? (1 - scaleFactor) * 2.1 - 0.3
+                  : (1 - scaleFactor) * 1.7 - 0.3
+              }
+            />
+            <Witch
+              visible={themeIcon}
+              scale={isMobile ? 0.35 : 0.4}
+              position-z={-0.5}
+              position-x={
+                isMobile
+                  ? (1 - scaleFactor) * 2.5 - 0.8
+                  : (1 - scaleFactor) * 1.7 - 0.8
+              }
+              rotation-y={1}
+            />
+          </group>
           <group scale={isMobile ? 0.3 : 1}>
             <Float floatIntensity={0.6}>
               {/* need to disableY and Z centering if you want to change 3d objects y and z. Can do same for x axis */}
@@ -196,7 +287,11 @@ export const Experience = () => {
           }}
         >
           <group position-x={isMobile ? 0 : -2}>
-            <SectionTitle position-z={1.5} rotation-y={Math.PI / 6}>
+            <SectionTitle
+              position-z={1.5}
+              rotation-y={Math.PI / 6}
+              themeIcon={themeIcon}
+            >
               SKILLS
             </SectionTitle>
             <BookCase position-z={-2} />
@@ -234,6 +329,7 @@ export const Experience = () => {
               position-x={-0.5}
               position-z={0}
               rotation-y={-Math.PI / 6}
+              themeIcon={themeIcon}
             >
               PROJECTS
             </SectionTitle>
@@ -273,6 +369,7 @@ export const Experience = () => {
           <SectionTitle
             position-x={isMobile ? -1.1 : -2 * scaleFactor}
             position-z={0.6}
+            themeIcon={themeIcon}
           >
             CONTACT
           </SectionTitle>
