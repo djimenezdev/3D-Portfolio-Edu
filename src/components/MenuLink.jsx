@@ -10,8 +10,9 @@ const MenuLink = (props) => {
         cursor: "pointer",
         color: props.themeIcon ? "#fff" : "#4668ee",
       }}
-      href={props.href}
+      href={props.navigate ? undefined : props.href}
       className="menu__button"
+      onClick={() => (props.navigate ? props.trigger() : null)}
     >
       {props.children}
     </motion.a>

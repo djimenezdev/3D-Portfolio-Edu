@@ -3,11 +3,14 @@ import { motion } from "framer-motion";
 import sunIcon from "../assets/sun.png";
 import pumpkinIcon from "../assets/pumpkin.png";
 import MenuLink from "./MenuLink";
+import { Link, useNavigate } from "react-router-dom";
+import { halloweenMusic } from "./Music";
 
 export const halloweenAtom = atom(false);
 
 const Menu = () => {
   const [themeIcon, setThemeIcon] = useAtom(halloweenAtom);
+  const navigate = useNavigate();
   return (
     <motion.div
       style={{ backdropFilter: themeIcon ? "none" : "blur(8px)" }}
@@ -47,6 +50,26 @@ const Menu = () => {
         </MenuLink>
         <MenuLink themeIcon={themeIcon} href="#contact">
           Contact
+        </MenuLink>
+        {themeIcon && (
+          <MenuLink
+            themeIcon={themeIcon}
+            navigate
+            trigger={() => {
+              navigate("/halloweenMusic");
+            }}
+          >
+            Music
+          </MenuLink>
+        )}
+        <MenuLink
+          themeIcon={themeIcon}
+          navigate
+          trigger={() => {
+            navigate("/credits");
+          }}
+        >
+          Credits
         </MenuLink>
         <div className="menu__icons">
           <motion.img
