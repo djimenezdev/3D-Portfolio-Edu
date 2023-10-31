@@ -1,32 +1,38 @@
 import { Text3D } from "@react-three/drei";
-import { useEffect, useRef } from "react";
+import { useRef, useState } from "react";
 import { config } from "../config";
 import { sleeper } from "../helpers";
+import { useFrame } from "@react-three/fiber";
 
 const SectionTitle = ({ children, ...props }) => {
   const titleRef = useRef();
 
-  useEffect(() => {
-    const flickerInterval =
+  let [flickerInterval, setFlickerInterval] = useState(null);
+  useFrame(() => {
+    if (!props.themeIcon && children === config.home.subtitle) {
+      clearInterval(flickerInterval);
+      setFlickerInterval(null);
+      titleRef.current.material.emissiveIntensity = 0;
+    } else if (
+      props.themeIcon &&
+      !flickerInterval &&
       children === config.home.subtitle
-        ? setInterval(async () => {
-            titleRef.current.material.emissiveIntensity = 1;
-            await sleeper(100);
-            titleRef.current.material.emissiveIntensity = 0;
-            await sleeper(300);
-            titleRef.current.material.emissiveIntensity = 2;
-            await sleeper(200);
-            titleRef.current.material.emissiveIntensity = 0.8;
-            await sleeper(200);
-            titleRef.current.material.emissiveIntensity = 2.3;
-          }, 5000)
-        : null;
-    return () => {
-      if (flickerInterval) {
-        clearInterval(flickerInterval);
-      }
-    };
-  }, []);
+    ) {
+      setFlickerInterval(
+        setInterval(async () => {
+          titleRef.current.material.emissiveIntensity = 1;
+          await sleeper(100);
+          titleRef.current.material.emissiveIntensity = 0;
+          await sleeper(300);
+          titleRef.current.material.emissiveIntensity = 2;
+          await sleeper(200);
+          titleRef.current.material.emissiveIntensity = 0.8;
+          await sleeper(200);
+          titleRef.current.material.emissiveIntensity = 2.3;
+        }, 5000)
+      );
+    }
+  });
 
   return (
     <Text3D ref={titleRef} font="fonts/Inter_Bold.json" size={0.3} {...props}>
