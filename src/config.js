@@ -63,4 +63,49 @@ export const config = {
       twitter: "https://twitter.com/djimenezdev",
     },
   },
+  credits: [
+    {
+      item: "Pumpkin Icon",
+      itemURL: "https://icons8.com/icon/PJIN8upHR1g7/pumpkin",
+      authorName: "Icons8",
+      authorURL: "https://icons8.com",
+    },
+    {
+      item: "Sun Icon",
+      itemURL: "https://icons8.com/icon/uOFF5nn1zZEo/sun",
+      authorName: "Icons8",
+      authorURL: "https://icons8.com",
+    },
+    {
+      item: "Ghost Model",
+      itemURL: "https://www.youtube.com/watch?v=H7-OI7YM2D0",
+      authorName: "Dorya",
+      authorURL: "https://www.youtube.com/@doryatutorial",
+    },
+    {
+      item: "Halloween Cat",
+      itemURL: "https://skfb.ly/ozDqZ",
+      authorName: "Enkarra",
+      authorURL: "https://sketchfab.com/Enkarra",
+    },
+    {
+      item: "Spiderman Meme Sound",
+      itemURL:
+        "https://www.myinstants.com/en/instant/spiderman-meme-song-37638/",
+      authorName: "johnny789",
+      authorURL: "https://www.myinstants.com/en/profile/johnny789/uploaded/",
+    },
+    {
+      item: "Calderon Model",
+      itemURL: "https://poly.pizza/m/P36cOeZHyX",
+      authorName: "CreativeTrio",
+      authorURL: "https://poly.pizza/u/CreativeTrio",
+    },
+    {
+      item: "Witch Model",
+      itemURL: "https://market.pmnd.rs/model/witch",
+      authorName: "Kay Louseberg",
+      authorURL: "https://market.pmnd.rs/creator/kaykit",
+    },
+  ],
 };
