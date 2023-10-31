@@ -5,11 +5,13 @@ import { Suspense } from "react";
 import MusicExperience from "./MusicExperience";
 import MusicSettings from "./MusicSettings";
 import MusicNav from "./MusicNav";
+import { useProgress } from "@react-three/drei";
 
 const Music = () => {
+  const { active } = useProgress();
   return (
     <>
-      <MusicNav />
+      {!active && <MusicNav />}
       <Leva
         hidden={
           !Boolean(
