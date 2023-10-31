@@ -7,33 +7,40 @@ const MusicSphere = (props) => {
   const sphereRef = useRef();
   let [i] = useState(0);
   useFrame((_state, delta) => {
-    console.log(props.soundRef.current.playing());
-    if (props.analyzerRef.current && props.soundRef.current.playing()) {
-      const dataArray = new Uint8Array(
-        props.analyzerRef.current.frequencyBinCount
-      );
-      props.analyzerRef.current.getByteFrequencyData(dataArray);
-
-      const avgFrequency =
-        dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
+    if (props.analyzerRef.current) {
+      let dataArray = [];
+      let avgFrequency = 0;
+      const isPlaying = props.soundRef.current.playing();
+      if (props.soundRef.current.playing()) {
+        dataArray = new Uint8Array(props.analyzerRef.current.frequencyBinCount);
+        props.analyzerRef.current.getByteFrequencyData(dataArray);
+        avgFrequency =
+          dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
+      }
 
       damp(
         sphereRef.current.material._radius,
         "value",
-        avgFrequency / 256 > 0.21
+        avgFrequency / 256 > 0.21 && isPlaying
           ? 1 - (avgFrequency / 256) * 0.7
-          : 1 - (avgFrequency / 256) * 0.4,
+          : avgFrequency / 256 < 0.21 && isPlaying
+          ? 1 - (avgFrequency / 256) * 0.4
+          : 1,
         0.1,
         delta
       ); // The avgFrequency is between 0 and 256, so we normalize it.
       damp(
         sphereRef.current.material._distort,
         "value",
-        i % 2 === 0 ? 0.5 : 1.3,
+        i % 2 === 0 && isPlaying ? 0.5 : i % 2 !== 0 && isPlaying ? 1.3 : 0,
         0.3,
         delta
       );
-      i++;
+      if (isPlaying) {
+        i++;
+      } else {
+        i = 0;
+      }
     } else {
       if (!props.soundRef.current.playing()) {
         damp(sphereRef.current.material._radius, "value", 1, 0.1, delta);
